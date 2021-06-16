@@ -1,0 +1,165 @@
+package bogdanov.task2;
+
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        System.out.println("\nProblem 1\n");
+        Task2.p1();
+        System.out.println("\nProblem 2\n");
+        Task2.p2();
+        System.out.println("\nProblem 3\n");
+        Task2.p3();
+        System.out.println("\nProblem 4\n");
+        Task2.p4();
+        System.out.println("\nProblem 5\n");
+        Task2.p5();
+        System.out.println("\nProblem 6\n");
+        Task2.p6();
+    }
+}
+
+class Task2 {
+
+    static void p1() {
+        for (int i = 1; i <= 99; i += 2) {
+            System.out.println(i);
+        }
+    }
+
+    static void p2() {
+        StringBuilder sb3 = new StringBuilder("Делится на 3: ");
+        StringBuilder sb5 = new StringBuilder("Делится на 5: ");
+        StringBuilder sb35 = new StringBuilder("Делится на 3 и на 5: ");
+        boolean m3, m5;
+        for (int i = 1; i <= 100; i++) {
+            m3 = (i % 3) == 0;
+            m5 = (i % 5) == 0;
+            if (m3 && m5) {
+                sb35.append(i);
+                sb35.append(" ");
+            } else if (m3) {
+                sb3.append(i);
+                sb3.append(" ");
+            } else if (m5) {
+                sb5.append(i);
+                sb5.append(" ");
+            }
+        }
+        System.out.printf("\n%s\n%s\n%s\n",
+                sb3, sb5, sb35);
+    }
+
+    static void p3() {
+        int a = 0, b = 0, c = 0;
+        boolean isCorrect = false;
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Введите первое число: ");
+        while (!isCorrect) {
+            if (scanner.hasNextInt()) {
+                a = scanner.nextInt();
+                isCorrect = true;
+            } else {
+                scanner.next();
+                System.out.println("Not an integer, try again");
+            }
+        }
+        isCorrect = false;
+        System.out.print("Введите второе число: ");
+        while (!isCorrect) {
+            if (scanner.hasNextInt()) {
+                b = scanner.nextInt();
+                isCorrect = true;
+            } else {
+                scanner.next();
+                System.out.println("Not an integer, try again");
+            }
+        }
+        isCorrect = false;
+        System.out.print("Введите третье число: ");
+        while (!isCorrect) {
+            if (scanner.hasNextInt()) {
+                c = scanner.nextInt();
+                isCorrect = true;
+            } else {
+                scanner.next();
+                System.out.println("Not an integer, try again");
+            }
+        }
+        System.out.println("Результат: " + ((a + b) == c));
+    }
+
+    static void p4() {
+        int a = 0, b = 0, c = 0;
+        boolean isCorrect = false;
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Введите первое число: ");
+        while (!isCorrect) {
+            if (scanner.hasNextInt()) {
+                a = scanner.nextInt();
+                isCorrect = true;
+            } else {
+                scanner.next();
+                System.out.println("Not an integer, try again");
+            }
+        }
+        isCorrect = false;
+        System.out.print("Введите второе число: ");
+        while (!isCorrect) {
+            if (scanner.hasNextInt()) {
+                b = scanner.nextInt();
+                isCorrect = true;
+            } else {
+                scanner.next();
+                System.out.println("Not an integer, try again");
+            }
+        }
+        isCorrect = false;
+        System.out.print("Введите третье число: ");
+        while (!isCorrect) {
+            if (scanner.hasNextInt()) {
+                c = scanner.nextInt();
+                isCorrect = true;
+            } else {
+                scanner.next();
+                System.out.println("Not an integer, try again");
+            }
+        }
+        System.out.println("Результат: " + ((b > a) && (c > b)));
+    }
+
+    static void p5() {
+        Random generator = new Random();
+        int[] numbers = new int[5];
+        for (int i = 0; i < numbers.length; i++) {
+            numbers[i] = generator.nextInt(5);
+        }
+        System.out.printf("array = %s\n%s\n",
+                Arrays.toString(numbers),
+                ((numbers[0] == 3) || (numbers[numbers.length - 1] == 3))
+        );
+    }
+
+    static void p6() {
+        Random generator = new Random();
+        int[] numbers = new int[5];
+        for (int i = 0; i < numbers.length; i++) {
+            numbers[i] = generator.nextInt(5);
+        }
+        boolean result = false;
+        for (int i = 0; i < numbers.length; i++) {
+            if (result = ((numbers[i] == 1) || (numbers[i] == 3))) {
+                break;
+            }
+        }
+
+        System.out.printf("array = %s\n%s\n",
+                Arrays.toString(numbers),
+                result
+        );
+    }
+
+}
