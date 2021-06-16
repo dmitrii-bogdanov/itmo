@@ -1,0 +1,211 @@
+package bogdanov.task3;
+
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) {
+        System.out.println("\nProblem 1\n");
+        Task3.p1();
+        System.out.println("\nProblem 2\n");
+        Task3.p2();
+        System.out.println("\nProblem 3\n");
+        Task3.p3();
+        System.out.println("\nProblem 4\n");
+        Task3.p4();
+        System.out.println("\nProblem 5\n");
+        Task3.p5();
+        System.out.println("\nProblem 6\n");
+        Task3.p6();
+    }
+}
+
+class Task3 {
+
+    static void p1() {
+        int[] numbers = randomArray(10);
+        System.out.println(Arrays.toString(numbers));
+        System.out.println(isAscendingOrder(numbers) ? "OK" : "Please, try again");
+        Arrays.sort(numbers);
+        System.out.println(Arrays.toString(numbers));
+        System.out.println(isAscendingOrder(numbers) ? "OK" : "Please, try again");
+    }
+
+    private static boolean isAscendingOrder(int[] array) {
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] < array[i - 1]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static void p2() {
+        int size = 0;
+        int[] numbers;
+        boolean isCorrect = false;
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Array Length: ");
+        while (!isCorrect) {
+            if (scanner.hasNextInt()) {
+                size = scanner.nextInt();
+                if (size < 1) {
+                    System.out.println("Not a positive integer, try again");
+                    continue;
+                }
+                isCorrect = true;
+            } else {
+                scanner.nextLine();
+                System.out.println("Not a positive integer, try again");
+            }
+        }
+        numbers = new int[size];
+        System.out.println("Numbers of array:");
+        for (int i = 0; i < size; i++) {
+            isCorrect = false;
+            while (true) {
+                if (scanner.hasNextInt()) {
+                    numbers[i] = scanner.nextInt();
+                    break;
+                } else {
+                    scanner.next();
+                    System.out.println("Not a positive integer, try again");
+                }
+            }
+        }
+        System.out.println("Result: " + Arrays.toString(numbers));
+    }
+
+    static void p3() {
+        int[] numbers = randomArray(5);
+        System.out.println("Array 1: " + Arrays.toString(numbers));
+        changeFirstAndLast(numbers);
+        System.out.println("Array 1: " + Arrays.toString(numbers));
+    }
+
+    private static void changeFirstAndLast(int[] array) {
+        if (array != null && array.length > 0) {
+            int tmp = array[0];
+            array[0] = array[array.length - 1];
+            array[array.length - 1] = tmp;
+        }
+    }
+
+    static void p4() {
+        int[] numbers = randomArray(20);
+        System.out.println(Arrays.toString(numbers));
+        Integer un = findFirstUniqueNumber(numbers);
+        System.out.println(un == null ? "No unique numbers" : un);
+    }
+
+    private static Integer findFirstUniqueNumber(int[] array) {
+        Integer un = null;
+        int i = 0;
+        int counter = 0;
+        for (; i < array.length; i++) {
+            for (int j = 0; j < array.length; j++) {
+                if (array[i] == array[j]) {
+                    counter++;
+                }
+            }
+            if (counter == 1) {
+                un = array[i];
+                break;
+            }
+            counter = 0;
+        }
+        return un;
+    }
+
+    private static int[] randomArray(int length) {
+        Random generator = new Random();
+        int[] numbers = new int[length];
+        for (int i = 0; i < numbers.length; i++) {
+            numbers[i] = generator.nextInt(19) - 9;
+        }
+        return numbers;
+    }
+
+    static void p5() {
+        Random generator = new Random();
+        int n = generator.nextInt(19) - 9;
+        System.out.println(n + " fibonacci number: " + fibonacci(n));
+    }
+
+    private static int fibonacci(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        boolean isPositive = n > 0;
+        n = n > 0 ? n : -n;
+
+        if (n == 1) {
+            return 1;
+        }
+        if (n == 2) {
+            return isPositive ? 1 : -1;
+        }
+        int a = 1;
+        int b = 1;
+        for (int i = 3; i <= n; i++) {
+            b = a + b;
+            a = b - a;
+        }
+        return isPositive ? b : ((n & 1) == 1) ? b : -b;
+    }
+
+    static void p6() {
+        int[] numbers = randomArray(10);
+        System.out.println(Arrays.toString(numbers));
+        mergeSort(numbers);
+        System.out.println(Arrays.toString(numbers));
+    }
+
+    private static void mergeSort(int[] array) {
+        if (array != null && array.length > 0) {
+            mergeSort(array, 0, array.length - 1);
+        }
+    }
+
+    private static void mergeSort(int[] array, int start, int end) {
+//        System.out.println(start + " " + end);
+        if (start == end) {
+//            System.out.println("=0");
+            return;
+        }
+        if ((end - start) == 1) {
+//            System.out.println("=1");
+            if (array[start] > array[end]) {
+                int tmp = array[start];
+                array[start] = array[end];
+                array[end] = tmp;
+            }
+            return;
+        }
+//        System.out.println(">1");
+        int middle = (end + start) / 2;
+        mergeSort(array, start, middle);
+        mergeSort(array, middle + 1, end);
+        int[] tmp = new int[end - start + 1];
+        int leftIndex = start;
+        int rightIndex = middle + 1;
+        int index = 0;
+        while ((leftIndex <= middle) && (rightIndex <= end)) {
+            if (array[leftIndex] < array[rightIndex]) {
+                tmp[index++] = array[leftIndex++];
+            } else {
+                tmp[index++] = array[rightIndex++];
+            }
+        }
+        while (leftIndex <= middle) {
+            tmp[index++] = array[leftIndex++];
+        }
+        while (rightIndex <= end) {
+            tmp[index++] = array[rightIndex++];
+        }
+        for (index = 0; index < tmp.length; index++) {
+            array[start + index] = tmp[index];
+        }
+    }
+
+}
