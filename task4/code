@@ -1,0 +1,165 @@
+package bogdanov.task4;
+
+import java.util.Random;
+
+public class Main {
+
+    public static void main(String[] args) {
+        System.out.println("\nProblem 1\n");
+        Task4.p1();
+        System.out.println("\nProblem 2\n");
+        Task4.p2();
+        System.out.println("\nProblem 3\n");
+        Task4.p3();
+        System.out.println("\nProblem 4\n");
+        Task4.p4();
+        System.out.println("\nProblem 5\n");
+        Task4.p5();
+    }
+}
+
+class Task4 {
+
+    static void p1() {
+        Random generator = new Random();
+        String[] strings = new String[5];
+        int length;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < strings.length; i++) {
+            length = generator.nextInt(10) + 1;
+            for (int j = 0; j <= length; j++) {
+                sb.append((char) ('a' + generator.nextInt(23)));
+            }
+            strings[i] = new String(sb);
+            sb.delete(0, sb.length());
+        }
+        System.out.println("Strings:");
+        for (String s : strings) {
+            System.out.println(s);
+        }
+        System.out.printf("Longest string: %s\n",
+                findLongestString(strings)
+        );
+
+    }
+
+    private static String findLongestString(String[] array) {
+        if (array != null && array.length > 0) {
+            int index = 0;
+            for (int i = 1; i < array.length; i++) {
+                if (array[i].length() > array[index].length()) {
+                    index = i;
+                }
+            }
+            return array[index];
+        }
+        return null;
+    }
+
+    static void p2() {
+        System.out.printf(
+                "%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n",
+                null, isPalindrome(null),
+                "", isPalindrome(""),
+                "a", isPalindrome("a"),
+                "abcba", isPalindrome("abcba"),
+                "asdfgh", isPalindrome("asdfgh")
+        );
+    }
+
+    private static boolean isPalindrome(String word) {
+        if (word != null && word.length() > 0) {
+            char[] chars = word.toCharArray();
+            boolean result = true;
+            for (int i = 0; i <= chars.length / 2; i++) {
+                result &= chars[i] == chars[chars.length - 1 - i];
+            }
+            return result;
+        }
+        return false;
+    }
+
+    static void p3() {
+        String text = "ыфыпофыоп бяка фывлаодло шушу бяка фыаафывбяка Бяка";
+        System.out.println(text);
+        text = censor(text);
+        System.out.println(text);
+    }
+
+    private static String censor(String text) {
+        if (text != null) {
+            String cens = "[вырезано цензурой]";
+            String und = "бяка";
+            StringBuilder sb = new StringBuilder(text);
+            for (int i = 0; i <= (sb.length() - und.length()); i++) {
+                if (sb.substring(i, i + und.length()).equalsIgnoreCase(und)) {
+                    sb.replace(i, i + und.length(), cens);
+                    i += cens.length() - und.length();
+                }
+            }
+            return sb.toString();
+        }
+        return null;
+    }
+
+    static void p4() {
+        String str1 = "123gjjjjgg123123jjjjj123";
+        String str2 = "123";
+        System.out.printf(
+                "str1: %s\nstr2: %s\nInclusions: %d\n",
+                str1, str2, countInclusions(str2, str1)
+        );
+    }
+
+    private static int countInclusions(String str1, String str2) {
+        if ((str1 != null) && (str2 != null)) {
+            String substr, str;
+            if (str1.length() < str2.length()) {
+                str = str2;
+                substr = str1;
+            } else {
+                str = str1;
+                substr = str2;
+            }
+            int counter = 0;
+            int i = 0;
+            while ((i = str.indexOf(substr, i) + 1) > 0) {
+                counter++;
+            }
+            return counter;
+        }
+        return -1;
+    }
+
+    static void p5() {
+        String text = "This is a test string";
+        System.out.printf(
+                "The given string is: \n%s\n",
+                text
+        );
+        System.out.printf(
+                "The string reversed word by word is: \n%s\n",
+                reverseWords(text)
+        );
+    }
+
+    private static String reverseWords(String text) {
+        if (text != null) {
+            StringBuilder sb;
+            String[] words = text.split(" ");
+            for (int i = 0; i < words.length; i++) {
+                sb = new StringBuilder(words[i]);
+                words[i] = sb.reverse().toString();
+            }
+            sb = new StringBuilder();
+            for (String s : words) {
+                sb.append(s);
+                sb.append(" ");
+            }
+            return sb.deleteCharAt(sb.length() - 1).toString();
+        }
+        return null;
+    }
+
+
+}
