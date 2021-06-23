@@ -1,0 +1,185 @@
+package bogdanov.task6;
+
+import java.util.Date;
+
+public class Main {
+
+    public static void main(String[] args) {
+        System.out.println("\nProblem 1\n");
+        p1();
+        System.out.println("\nProblem 2\n");
+        p2();
+        System.out.println("\nProblem 3\n");
+        p3();
+        System.out.println("\nProblem 4\n");
+        p4();
+    }
+
+    private static void p1() {
+        Study study = new Study("Изучение Java - это просто!");
+        System.out.println(study.printCourse());
+    }
+
+    private static void p2() {
+        House house1 = new House();
+        House house2 = new House();
+        House.setProperties(house1, 10, 2000, "A");
+        House.setProperties(house2, 20, 2010, "B");
+        System.out.println(house1);
+        System.out.println("house1 age = " + house1.getAge());
+        System.out.println(house2);
+        System.out.println("house2 age = " + house2.getAge());
+    }
+
+    private static void p3() {
+        Tree tree1 = new Tree(10, "10 year old tree");
+        Tree tree2 = new Tree(20, false, "Dead tree");
+        Tree tree3 = new Tree();
+        System.out.println(tree1);
+        System.out.println(tree2);
+        System.out.println(tree3);
+    }
+
+    private static void p4() {
+        Aircraft aircraft = new Aircraft();
+        Aircraft.Wing wing = aircraft.new Wing();
+        System.out.println("aircraft.wing mass = " + wing.getMass());
+        wing.setMass(200);
+        System.out.println("aircraft.wing mass = " + wing.getMass());
+    }
+
+}
+
+class Study {
+
+    private String course;
+
+    Study(String course) {
+        this.course = course;
+    }
+
+    public String printCourse() {
+        return this.course;
+    }
+}
+
+class House {
+
+    private int floors = 0;
+    private int buildYear = 0;
+    private String name = "Unnamed";
+
+    static void setProperties(House house, int floors, int buildYear, String name) {
+        house.setFloors(floors);
+        house.setBuildYear(buildYear);
+        house.setName(name);
+    }
+
+    int getAge() {
+        return (new Date()).getYear() - buildYear + 1900;
+    }
+
+    void setFloors(int floors) {
+        this.floors = floors;
+    }
+
+    void setBuildYear(int buildYear) {
+        this.buildYear = buildYear;
+    }
+
+    void setName(String name) {
+        this.name = name;
+    }
+
+    int getFloors() {
+        return floors;
+    }
+
+    int getBuildYear() {
+        return buildYear;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "House{floors=%d,buildYear=%d,name=\"%s\"}",
+                floors, buildYear, name
+        );
+    }
+}
+
+class Tree {
+
+    private int age = 0;
+    private boolean isAlive = true;
+    private String name = "Unnamed";
+
+    Tree(int age, String name) {
+        setAge(age);
+        setName(name);
+    }
+
+    Tree(int age, boolean isAlive, String name) {
+        setAge(age);
+        setAlive(isAlive);
+        setName(name);
+    }
+
+    Tree() {
+        System.out.println("Пустой конструктор без параметров сработал");
+    }
+
+    void setAge(int age) {
+        this.age = age;
+    }
+
+    void setAlive(boolean isAlive) {
+        this.isAlive = isAlive;
+    }
+
+    void setName(String name) {
+        this.name = name;
+    }
+
+    int getAge() {
+        return age;
+    }
+
+    boolean isAlive() {
+        return isAlive;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Tree{age=%d,isAlive=%s,name=\"%s\"}",
+                age, isAlive, name
+        );
+    }
+}
+
+class Aircraft {
+
+    public class Wing {
+        private int mass = 0;
+
+        public void setMass(int mass) {
+            this.mass = mass;
+        }
+
+        public int getMass() {
+            return mass;
+        }
+    }
+
+}
+
+
