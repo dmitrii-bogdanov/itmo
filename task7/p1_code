@@ -25,6 +25,8 @@ public class Car {
 
 }
 
+package bogdanov.task7.p1;
+
 public class Truck extends Car{
 
     public int wheels = 4;
@@ -37,9 +39,8 @@ public class Truck extends Car{
     }
 
     public void newWheels() {
-        wheels = 6;
+        wheels += 2;
         System.out.println("Number of wheels: " + wheels);
     }
 
 }
-
