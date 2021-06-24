@@ -1,0 +1,45 @@
+package bogdanov.task7.p1;
+
+public class Car {
+
+    public int weight;
+    public String model;
+    public char color;
+    public float speed;
+
+
+    public void outPut() {
+        System.out.println("Вес " + model + " составляет " + weight + "кг.");
+        System.out.println("Цвет машины - " + color + " и её скорость - " + speed);
+    }
+
+    public Car(int w, String m, char c, float s) {
+        weight = w;
+        model = m;
+        color = c;
+        speed = s;
+    }
+
+    public Car() {
+    }
+
+}
+
+public class Truck extends Car{
+
+    public int wheels = 4;
+    public int maxCargo;
+
+    public Truck(int w, String m, char c, float s, int wheels, int maxCargo) {
+        super(w, m, c, s);
+        this.wheels = wheels;
+        this.maxCargo = maxCargo;
+    }
+
+    public void newWheels() {
+        wheels = 6;
+        System.out.println("Number of wheels: " + wheels);
+    }
+
+}
+
