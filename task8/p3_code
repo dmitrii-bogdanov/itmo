@@ -1,0 +1,109 @@
+package bogdanov.task8.p3;
+
+public interface Shape {
+
+    public double getVolume();
+
+}
+
+
+package bogdanov.task8.p3;
+
+public abstract class SolidOfRevolution implements Shape {
+
+    private double radius;
+
+    public SolidOfRevolution(double radius) {
+        this.radius = radius;
+    }
+
+    protected double getRadius() {
+        return radius;
+    }
+
+}
+
+package bogdanov.task8.p3;
+
+public class Cylinder extends SolidOfRevolution {
+
+    private double height;
+
+    public Cylinder(double radius, double height) {
+        super(radius);
+        this.height = height;
+    }
+
+    @Override
+    public double getVolume() {
+        return Math.PI * getRadius() * getRadius() * height;
+    }
+}
+
+package bogdanov.task8.p3;
+
+public class Ball extends SolidOfRevolution {
+
+    public Ball(double radius) {
+        super(radius);
+    }
+
+    @Override
+    public double getVolume() {
+        return Math.PI * getRadius() * getRadius() * getRadius() * 4 / 3;
+    }
+}
+
+package bogdanov.task8.p3;
+
+public class Pyramid implements Shape {
+
+    private double s;
+    private double h;
+
+    public Pyramid(double s, double h) {
+        this.s = s;
+        this.h = h;
+    }
+
+    @Override
+    public double getVolume() {
+        return s * h / 3;
+    }
+}
+
+package bogdanov.task8.p3;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Box implements Shape {
+
+    private double volume;
+    private List<Shape> items = new ArrayList<>();
+
+    public Box(double volume) {
+        this.volume = volume;
+    }
+
+    public boolean add(Shape shape) {
+        if (shape != null) {
+            double availableVolume = getVolume();
+            for (Shape s : items) {
+                availableVolume -= s.getVolume();
+            }
+            if (shape.getVolume() <= availableVolume) {
+                items.add(shape);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public double getVolume() {
+        return volume;
+    }
+}
