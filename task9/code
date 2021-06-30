@@ -1,0 +1,115 @@
+package bogdanov.task9;
+
+import java.util.Random;
+
+public class Main {
+
+    public static void main(String[] args) {
+    }
+
+    private static int findMax(int[][] numbers) throws NullPointerException {
+
+        if (isEmpty(numbers)) {
+            throw new RuntimeException("Пустой массив");
+        }
+
+        int max = Integer.MIN_VALUE;
+        for (int[] line : numbers) {
+            for (int n : line) {
+                if (n > max) {
+                    max = n;
+                }
+            }
+        }
+
+        return max;
+    }
+
+    private static boolean isSquare(int[][] array) throws NullPointerException {
+        if (isEmpty(array)) {
+            throw new RuntimeException("Пустой массив");
+        }
+
+        boolean isSquare = true;
+        for (int[] line : array) {
+            isSquare &= (line.length == array.length);
+        }
+
+        return isSquare;
+    }
+
+    private static int[] findMaxLineSum(int[][] numbers) throws NullPointerException {
+        if (isEmpty(numbers)) {
+            throw new RuntimeException("Пустой массив");
+        }
+        boolean isFound = false;
+        int max = Integer.MIN_VALUE;
+        int tmp;
+        int index = -1;
+        int counter = -1;
+        for (int[] line : numbers) {
+            counter++;
+            if (line.length > 0) {
+                tmp = 0;
+                for (int n : line) {
+                    tmp += n;
+                }
+                if (tmp >= max) {
+                    max = tmp;
+                    index = counter;
+                }
+            }
+        }
+        return index == -1 ? null : numbers[index];
+    }
+
+    private static char[][] getRandomArray(int r, int c) {
+        if ((r < 1) || (c < 1)) {
+            throw new RuntimeException("Неположительный размер");
+        }
+        char[][] array = new char[r][c];
+        Random generator = new Random();
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                array[i][j] = (char) ('A' + generator.nextInt(23));
+            }
+        }
+
+        return array;
+    }
+
+    private static int getRandomCommonElement(int[] numbers, int[] weight) throws NullPointerException {
+        if ((numbers.length == 0) || (weight.length == 0)) {
+            throw new RuntimeException("Пустой массив");
+        }
+        if (numbers.length != weight.length) {
+            throw new RuntimeException("Разный размер массивов");
+        }
+
+        int[] commonNumbers = new int[numbers.length];
+        int counter = 0;
+        for (int i = 0; i < numbers.length; i++) {
+            if (numbers[i] == weight[i]) {
+                commonNumbers[counter++] = numbers[i];
+            }
+        }
+        if (counter == 0) {
+            throw new RuntimeException("Нет общих элементов");
+        }
+
+        Random generator = new Random();
+
+        return commonNumbers[generator.nextInt(counter)];
+
+    }
+
+    private static boolean isEmpty(int[][] array) {
+        boolean isEmpty = true;
+        for (int[] line : array) {
+            isEmpty &= (line.length == 0);
+        }
+        return isEmpty;
+    }
+
+
+}
