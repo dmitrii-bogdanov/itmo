@@ -1,0 +1,158 @@
+package bogdanov.task10;
+
+import java.util.*;
+import java.util.function.Function;
+
+public class Main {
+
+    public static void main(String[] args) {
+        System.out.println("\nProblem 1");
+        p1();
+        System.out.println("\nProblem 2");
+        p2();
+        System.out.println("\nProblem 3");
+        p3();
+        System.out.println("\nProblem 4");
+        p4();
+    }
+
+    private static void p1() {
+        Random generator = new Random();
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            list.add(generator.nextInt(10));
+        }
+        System.out.println(list);
+        removeDuplicates(list);
+        System.out.println(list);
+    }
+
+    private static <E> void removeDuplicates(Collection<E> collection) {
+        Collection<E> tmp = new HashSet<E>();
+        tmp.addAll(collection);
+        collection.clear();
+        collection.addAll(tmp);
+    }
+
+    private static void p2() {
+        /*
+        У меня для такого метода разницы нет по времени
+        Пример вывода:
+        ArrayList avg(10): 871 ms
+        LinkedList avg(10): 849 ms
+         */
+        List<Integer> arrayList = new ArrayList<>();
+        List<Integer> linkedList = new ArrayList<>();
+
+        Random generator = new Random();
+        Integer num = null;
+        for (int i = 0; i < 1_000_000; i++) {
+            num = generator.nextInt();
+            arrayList.add(num);
+            linkedList.add(num);
+        }
+
+        long time = 0;
+        int n = 0;
+        for (; n < 10; n++) {
+            time += System.nanoTime();
+            for (int i = 0; i < 10_000_000; i++) {
+                num = arrayList.get(generator.nextInt(1_000_000));
+            }
+            time -= System.nanoTime();
+        }
+        System.out.printf(
+                "ArrayList avg(%d): %d ms\n", n, -time / n / 1_000_000
+        );
+
+        time = 0;
+        n = 0;
+        for (; n < 10; n++) {
+            time += System.nanoTime();
+            for (int i = 0; i < 10_000_000; i++) {
+                num = linkedList.get(generator.nextInt(1_000_000));
+            }
+            time -= System.nanoTime();
+        }
+        System.out.printf(
+                "LinkedList avg(%d): %d ms\n", n, -time / n / 1_000_000
+        );
+    }
+
+    private static void p3() {
+        Map<User, Integer> userScore = new HashMap<>();
+        Random generator = new Random();
+        StringBuilder name = new StringBuilder();
+        Function<String, User> user = User::new;
+        for (int i = 0; i < 10; i++) {
+            name.delete(0, name.length());
+            for (int j = 0; j < 3; j++) {
+                name.append((char) ('A' + generator.nextInt(23)));
+            }
+            userScore.put(user.apply(name.toString()), generator.nextInt(20));
+        }
+        System.out.println("List of entries:");
+        for (Map.Entry<User, Integer> e : userScore.entrySet()) {
+            System.out.println(e.getKey().getName() + " : " + e.getValue());
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\n Input name to see score:");
+        Integer score = userScore.getOrDefault(user.apply(scanner.nextLine()), -1);
+        System.out.println("Score: " + (score < 0 ? "Invalid Name" : score));
+    }
+
+    private static void p4() {
+        Integer[] nums = new Integer[20];
+        Random generator = new Random();
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = generator.nextInt(10);
+        }
+        System.out.println(Arrays.toString(nums));
+        arrayToMap(nums).forEach((k, v) -> System.out.println(k + " : " + v));
+    }
+
+    private static <K> Map<K, Integer> arrayToMap(K[] ks) {
+        Map<K, Integer> map = new HashMap<>();
+        for (K k : ks) {
+            map.computeIfPresent(k, (key, value) -> ++value);
+            map.putIfAbsent(k, 1);
+        }
+        return map;
+    }
+}
+
+class User {
+    private String name;
+
+    User(String name) {
+        this.name = name;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.name.toUpperCase().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (this.name.equalsIgnoreCase(((User) obj).name)) {
+            return true;
+        }
+        return false;
+    }
+}
