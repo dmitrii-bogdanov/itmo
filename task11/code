@@ -1,0 +1,207 @@
+package bogdanov.task11;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        p1p2();
+        p3();
+        p4();
+        p5p6();
+    }
+
+    private static void p1p2() {
+        for (int i = 0; i < 5; i++) {
+            writeToFile(getRandomString(5));
+        }
+        List<String> text = new ArrayList<>();
+        if (readFile(new File("out.txt"), text)) {
+            for (String s : text) {
+                System.out.println(s);
+            }
+        }
+    }
+
+    private static void p3() {
+        File out1 = new File("out1.txt");
+        File out2 = new File("out2.txt");
+        File result = new File("result.txt");
+        clearFile(out1);
+        clearFile(out2);
+        for (int i = 0; i < 2; i++) {
+            writeToFile(out1, true, getRandomString(5));
+        }
+        for (int i = 0; i < 2; i++) {
+            writeToFile(out2, true, getRandomString(5));
+        }
+        List<String> text = new ArrayList<>();
+        System.out.println("File 1:");
+        if (readFile(out1, text)) {
+            for (String s : text) {
+                System.out.println(s);
+            }
+        }
+        System.out.println("File 2:");
+        if (readFile(out2, text)) {
+            for (String s : text) {
+                System.out.println(s);
+            }
+        }
+        mergeFiles(new File("result.txt"), new File("out1.txt"), new File("out2.txt"));
+        System.out.println("Result:");
+        if (readFile(result, text)) {
+            for (String s : text) {
+                System.out.println(s);
+            }
+        }
+    }
+
+    private static void p4() {
+        File file = new File("file.txt");
+        for (int i = 0; i < 5; i++) {
+            writeToFile(file, true, getRandomString(2));
+        }
+        File toFile = new File("toFile.txt");
+        copyFile(file, toFile);
+    }
+
+    private static void p5p6() {
+        List<String> list = new ArrayList<>();
+        System.out.println("Without FilenameFilter:");
+        findFiles(new File("."), "u", list);
+        list.forEach(System.out::println);
+        System.out.println("With FilenameFilter:");
+        findFilesWithFilter(new File("."), "u", list);
+        list.forEach(System.out::println);
+    }
+
+    private static String getRandomString(int length) {
+        Random generator = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append((char) ('A' + generator.nextInt(23)));
+        }
+        return sb.toString();
+    }
+
+    private static boolean writeToFile(String text) {
+        return writeToFile(new File("out.txt"), true, text);
+    }
+
+    private static boolean writeToFile(File file, boolean append, String text) {
+        try (Writer writer = new FileWriter(file, append)) {
+            writer.write(text);
+            writer.write("\n");
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private static boolean clearFile(File file) {
+        try (Writer writer = new FileWriter(file, false)) {
+            writer.write("");
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private static boolean readFile(File file, List<String> readToList) {
+        return readFile(file, readToList, false);
+    }
+
+    private static boolean readFile(File file, List<String> readToList, boolean append) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            if (!append) {
+                readToList.clear();
+            }
+            String str;
+            while ((str = reader.readLine()) != null) {
+                readToList.add(str);
+            }
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private static boolean mergeFiles(File result, File... files) {
+        if (result != null) {
+            if (clearFile(result)) {
+                boolean isSuccessful = true;
+                List<String> text = new ArrayList<>();
+                for (File f : files) {
+                    isSuccessful &= readFile(f, text);
+                    for (String s : text) {
+                        isSuccessful &= writeToFile(result, true, s);
+                    }
+                }
+                return isSuccessful;
+            }
+        }
+        return false;
+    }
+
+    private static boolean copyFile(File file, File toFile) {
+        try (
+                BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
+                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(toFile))
+        ) {
+            if (clearFile(toFile)) {
+                byte[] buffer = new byte[128];
+                int l;
+                while ((l = in.read(buffer)) > 0) {
+                    out.write(buffer, 0, l);
+                    out.flush();
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private static boolean findFiles(File directory, String str, List<String> list) {
+        if (directory != null && directory.isDirectory()) {
+            list.clear();
+            File[] files = directory.listFiles();
+            String tmp;
+            for (File f : files) {
+                if (f.isFile() && ((tmp = f.getName()).indexOf(str) > -1)) {
+                    list.add(tmp);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean findFilesWithFilter(File directory, String str, List<String> list) {
+        if ((directory != null) && directory.isDirectory()) {
+            list.clear();
+            File[] files = directory.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.matches(
+                            String.format(".*%s.*", str)
+                    );
+                }
+            });
+            for (File f : files) {
+                if (f.isFile()) {
+                    list.add(f.getName());
+                }
+            }
+        }
+        return false;
+    }
+
+}
