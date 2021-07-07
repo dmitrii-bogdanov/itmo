@@ -1,0 +1,159 @@
+package bogdanov.task12;
+
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        p1();
+        p2();
+        p3();
+        p4();
+    }
+
+    private static void p1() {
+        Thread[] threads = new Thread[10];
+        for (int i = 0; i < threads.length; i++) {
+            threads[i] = new Thread(new P1Runnable());
+            System.out.println(threads[i].getName());
+        }
+
+        for (Thread thread : threads) {
+            thread.start();
+        }
+    }
+
+    private static void p2() {
+        Thread thread = new Thread(new P1Runnable());
+        System.out.println(thread.getState());
+        thread.start();
+        System.out.println(thread.getState());
+        System.out.println(thread.getState());
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println(thread.getState());
+    }
+
+    private static void p3() {
+        /*
+         Метод increment не является синхронизированным,
+         а сама операция инкременции не является атомарной.
+         Таким образом другие потоки могут не видеть произошедшее изменение
+         и вносить изменение, основанное на прошлом состоянии.
+         */
+        Counter counter = new Counter();
+        Thread[] threads = new Thread[100];
+        for (int i = 0; i < threads.length; i++) {
+            threads[i] = new Thread(new CounterIncrement(counter));
+        }
+        for (Thread thread : threads) {
+            thread.start();
+        }
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        System.out.println(counter.getCount());
+    }
+
+    private static void p4() {
+        NamePrinter thread1 = new NamePrinter();
+        NamePrinter thread2 = new NamePrinter();
+        Object monitor = new Object();
+        thread1.setMonitor(monitor);
+        thread2.setMonitor(monitor);
+
+        thread1.start();
+        thread2.start();
+
+        boolean isFinished = false;
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
+        scanner.close();
+        thread1.finish();
+        thread2.finish();
+
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println(thread1.getState());
+        System.out.println(thread2.getState());
+    }
+}
+
+class P1Runnable implements Runnable {
+    @Override
+    public void run() {
+        for (int i = 0; i <= 100; i++) {
+            System.out.println(i);
+        }
+    }
+}
+
+class Counter {
+    int count = 0;
+
+    public void increment() {
+        count = count + 1;
+    }
+
+    public int getCount() {
+        return count;
+    }
+}
+
+class CounterIncrement implements Runnable {
+
+    private Counter counter;
+
+    CounterIncrement(Counter counter) {
+        this.counter = counter;
+    }
+
+    @Override
+    public void run() {
+        for (int i = 0; i <= 1000; i++) {
+            counter.increment();
+        }
+    }
+}
+
+class NamePrinter extends Thread {
+    private boolean isFinished = false;
+    private Object monitor = new Object();
+
+    void setMonitor(Object monitor) {
+        this.monitor = monitor;
+    }
+
+    void finish() {
+        isFinished = true;
+    }
+
+    @Override
+    public void run() {
+        synchronized (monitor) {
+            while (!isFinished) {
+                System.out.println(getName());
+                monitor.notifyAll();
+                try {
+                    monitor.wait();
+                } catch (InterruptedException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+            monitor.notifyAll();
+        }
+    }
+
+}
