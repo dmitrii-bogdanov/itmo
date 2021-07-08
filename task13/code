@@ -1,0 +1,67 @@
+package bogdanov.task13;
+
+import com.google.gson.Gson;
+
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Search:");
+        String query = scanner.nextLine();
+        scanner.close();
+        System.out.println("Results:");
+        int c = 1;
+        for (String s : search(query)) {
+            System.out.printf("%d) %s\n", c++, s);
+        }
+
+
+    }
+
+    static String getJson(String query) {
+        try {
+            URL url = new URL(
+                    String.format(
+                            "https://ru.wikipedia.org/w/api.php?action=query&list=search&utf8=&format=json&srsearch=\"%s\"",
+                            query
+                    ));
+
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setReadTimeout(10000);
+            connection.setConnectTimeout(15000);
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream in = connection.getInputStream();
+            String result = new String(in.readAllBytes());
+            in.close();
+            return result;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    static List<String> search(String query) {
+        Gson gson = new Gson();
+        Example example = gson.fromJson(getJson(query), Example.class);
+        List<Search> list = example.getQuery().getSearch();
+        List<String> result = new ArrayList<>();
+        for (Search s : list) {
+            result.add(String.format("%s\thttps://ru.wikipedia.org/?curid=%s", s.getTitle(), s.getPageid()));
+        }
+        return result;
+    }
+
+}
