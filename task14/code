@@ -1,0 +1,72 @@
+package bogdanov.task14;
+
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+
+public class Main {
+
+    public static void main(String[] args) {
+        p1();
+        p2();
+        p4();
+        p5();
+    }
+
+    private static void p1() {
+        /*
+        4.4 Напишите метод, который инвертирует слова в строке.
+         */
+        Random generator = new Random();
+        String s = "This is a test string";
+        System.out.println(s);
+        System.out.println(invertWords(s));
+    }
+
+    private static String invertWords(String s) {
+        return Arrays.stream(s.split(" "))
+                .map(str -> new StringBuilder(str).reverse().toString())
+                .reduce((result, str) -> result = result + " " + str)
+                .get();
+    }
+
+    private static void p2() {
+        // 4.1 Написать метода для поиска самой длинной строки
+        List<String> strings = new LinkedList<>();
+        Random generator = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 5; i++) {
+            sb.delete(0, sb.length());
+            for (int j = 0; j < generator.nextInt(10); j++) {
+                sb.append((char) ('A' + generator.nextInt(23)));
+            }
+            strings.add(sb.toString());
+        }
+        strings.forEach(System.out::println);
+        System.out.println(getLongestString(strings));
+    }
+
+    private static String getLongestString(List<String> list) {
+        return list.stream().max(Comparator.comparingInt(String::length)).get();
+    }
+
+    private static <E> Collection<E> deleteDuplicates(Collection<E> collection) {
+        // 10.1 Написать метод, который возвращает коллекцию уже без дубликатов.
+        return collection.stream().distinct().collect(Collectors.toList());
+    }
+
+    private static void p4() {
+        // 1.4 Даны три числа: 3.6, 4.1, 5.9. В переменной result посчитайте произведение этих чисел.
+
+        double result = DoubleStream.of(3.6, 4.1, 5.9).reduce((res, d) -> res *= d).getAsDouble();
+        System.out.println(result);
+    }
+
+    private static void p5() {
+        // 1.	Напишите программу, которая выводит на консоль нечетные числа от 1 до 99.
+        // Каждое число печатается с новой строки
+        IntStream.range(1, 100).filter(i -> (i & 1) > 0).forEach(System.out::println);
+    }
+}
